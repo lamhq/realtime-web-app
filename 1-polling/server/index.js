@@ -5,7 +5,7 @@ const port = 3000;
 
 app.get('/data', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
-  const data = fs.readFileSync(__dirname + '/data.txt');
+  const data = fs.readFileSync(__dirname + '/../../data.txt');
   res.send(data);
 })
 
