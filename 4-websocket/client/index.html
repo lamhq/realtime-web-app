@@ -16,8 +16,8 @@
           console.log('connected');
         };
 
-        socket.onmessage = async (e) => {
-          const data = await e.data.text();
+        socket.onmessage = (e) => {
+          const data = e.data;
           document.getElementById('content').innerHTML = `<p>${data}</p>`;
         };
 
