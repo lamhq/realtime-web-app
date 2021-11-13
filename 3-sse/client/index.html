@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+	<title>Server-sent events Demo</title>
+  
+  <script>
+    if (window.EventSource) {
+      const source = new EventSource('http://localhost:3000/data');
+      source.onmessage = (e) => {
+        document.getElementById('content').innerHTML = e.data;
+      }
+    } else {
+      alert("Browser doesn't support Server-Sent-Events!");
+    }
+  </script>
+</head>
+<body>
+  <div id="content"></div>
+</body>
+</html>
