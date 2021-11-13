@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+	<title>Long Polling Demo</title>
+  
+  <script>
+    let curVer;
+
+    function fetchWithTimeout(url, timeout=1000) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      return fetch(url, { signal: controller.signal });
+    }
+
+    async function getData() {
+      const response = await fetchWithTimeout(`http://localhost:3000/data?curVer=${curVer || ''}`, 10000)
+        .then(async (response) => {
+          const data = await response.json();
+          document.getElementById('content').innerHTML = data.content;
+          curVer = data.version;
+        })
+        // .finally(() => setTimeout(getData, 2000));
+        .finally(getData);
+    }
+
+    getData();
+  </script>
+</head>
+<body>
+  <div id="content"></div>
+</body>
+</html>
