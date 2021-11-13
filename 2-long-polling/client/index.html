@@ -8,23 +8,29 @@
 	<title>Long Polling Demo</title>
   
   <script>
-    let curVer;
-
     function fetchWithTimeout(url, timeout=1000) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
       return fetch(url, { signal: controller.signal });
     }
 
+    let curVer;
+
     async function getData() {
-      const response = await fetchWithTimeout(`http://localhost:3000/data?curVer=${curVer || ''}`, 10000)
-        .then(async (response) => {
-          const data = await response.json();
-          document.getElementById('content').innerHTML = data.content;
-          curVer = data.version;
-        })
-        // .finally(() => setTimeout(getData, 2000));
-        .finally(getData);
+      try {
+        const response = await fetchWithTimeout(`http://localhost:3000/data?curVer=${curVer || ''}`, 5000)
+        
+        const data = await response.json();
+        document.getElementById('content').innerHTML = data.content;
+        curVer = data.version;
+        
+        getData();
+      } catch (err) {
+        // refetch data if timeout
+        if (err.toString().includes('AbortError')) {
+          getData();
+        }
+      };
     }
 
     getData();

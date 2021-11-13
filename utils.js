@@ -1,5 +1,26 @@
 const fs = require('fs');
 
+function getFileLastModified(filename) {
+  return fs.statSync(filename).mtime.getTime();
+}
+
+function getFileContent(filename) {
+  return fs.readFileSync(filename, 'utf8');
+}
+
+function waitForFileChange(filename, version) {
+  return new Promise((rs) => {
+    const checkFileModified = () => {
+      if (version < getFileLastModified(filename)) {
+        rs();
+      } else {
+        setTimeout(checkFileModified, 50);
+      }  
+    }
+    checkFileModified();
+  })
+}
+
 let lastMod;
 
 function watchFileChange(filename, cb) {
@@ -12,5 +33,9 @@ function watchFileChange(filename, cb) {
 }
 
 module.exports = {
-  watchFileChange
+  getFileContent,
+  getFileLastModified,
+  waitForFileChange,
+  watchFileChange,
 };
+
